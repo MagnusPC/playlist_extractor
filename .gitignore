@@ -1,7 +1,7 @@
 # user generated
-src/fullpath.txt
-src/pages/
-extraction_results/
+src/*.txt
+src/pages/*.html
+extraction_results/*.txt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

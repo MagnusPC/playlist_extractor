@@ -1,0 +1,1 @@
+crawler should extract files: artists.txt, albums.txt, artist-song.txt, full-extraction.txt

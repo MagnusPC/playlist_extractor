@@ -1,0 +1,1 @@
+you should save your spotify page as a html file here, there may be a better way to do it but this is the initial idea

@@ -1,9 +1,10 @@
 import os;
 from bs4 import BeautifulSoup;
 
-# change the path string in the fullpath document
-path = os.path.join(os.path.dirname(__file__), 'fullpath.txt')
+path = os.path.join(os.path.dirname(__file__), 'fullpath.txt') # change the path string in the fullpath document
+
 print('Filepath: >>', path, '<< exists?', os.path.isfile(path))
+
 
 
 # for folder_name, subfolders, filenames in os.walk():
