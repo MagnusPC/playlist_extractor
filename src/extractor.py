@@ -1,16 +1,23 @@
-import os;
-from bs4 import BeautifulSoup;
+import os
+from selenium import webdriver
+from selenium.webdriver import ActionChains
+from selenium.webdriver.common.by import By
 
-path = os.path.join(os.path.dirname(__file__), 'fullpath.txt') # change the path string in the fullpath document
+driver = webdriver.Firefox()
 
-print('Filepath: >>', path, '<< exists?', os.path.isfile(path))
+driver.get("https://open.spotify.com/playlist/6RAdTOh6toX0KHSxjoqG1z")
 
+driver.implicitly_wait(30)
 
+amount_of_songs = driver.find_element(By.XPATH, '/html/body/div[3]/div/div[2]/div[5]/div/div[2]/div[2]/div/main/section/div[1]/div[3]/div[3]/div/div[2]/span[1]').text
+print(amount_of_songs)
 
-# for folder_name, subfolders, filenames in os.walk():
-#      print(f'The current folder is {folder_name}')
-#      for subfolder in subfolders:
-#          print(f'SUBFOLDER OF {folder_name}: {subfolder}')
-#      for filename in filenames:
-#          print(f'FILE INSIDE {folder_name}: {filename}')
-#      print('')
+amount_as_int = int(amount_of_songs.split()[0])
+print(amount_as_int, 'is', type(amount_as_int))
+
+driver.implicitly_wait(30)
+
+for element in range(amount_as_int):
+    found_elements = driver.find_element(By.CLASS_NAME, 'IjYxRc5luMiDPhKhZVUH UpiE7J6vPrJIa59qxts4')
+
+print(len(found_elements))
