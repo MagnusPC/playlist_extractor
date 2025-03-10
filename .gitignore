@@ -1,3 +1,8 @@
+# user generated
+src/fullpath.txt
+src/pages/
+extraction_results/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

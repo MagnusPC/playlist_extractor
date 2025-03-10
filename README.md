@@ -1,1 +1,3 @@
 relationsship is over with spotify
+
+next step would be to automatically lookup where to find all the music again, whether on bandcamp, youtube, soundcloud, other...
