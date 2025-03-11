@@ -1,1 +1,0 @@
-you should save the spotify webpage of a public playlist as a html file here - there may be a better way to do it but this is the initial idea
