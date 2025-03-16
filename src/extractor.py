@@ -56,6 +56,7 @@ for index, element in enumerate(amount_as_int, 1):
     if index % 40 == 0:
         loaded_index = 1
         interaction.send_keys("\ue00f\ue00f").perform() # pagedown x2
+        driver.implicitly_wait(30)
     else:
         loaded_index += 1
 
@@ -65,15 +66,16 @@ for index, element in enumerate(amount_as_int, 1):
     # get the webelement
     try:
         element = driver.find_element(By.CSS_SELECTOR, selector)
-        # if class type = UpiE7J6vPrJIa59qxts4 (placeholder row) wait
-        isTemp = element.find_element(By.CLASS_NAME, "UpiE7J6vPrJIa59qxts4")
+        tempElement = driver.find_element(By.CLASS_NAME, "UpiE7J6vPrJIa59qxts4")
+        loadedElement = element.find_element(By.CLASS_NAME, "IjYxRc5luMiDPhKhZVUH UpiE7J6vPrJIa59qxts4")
 
-        # print(element)
-        # print(isTemp)
+        if loadedElement is not tempElement:
+            print(tempElement, tempElement.text)
+            print(loadedElement, loadedElement.text) # child node
 
         # add element to lists
-        found_elements.append(element)
-        found_unique_elements.add(element)
+        found_elements.append(loadedElement)
+        found_unique_elements.add(loadedElement)
 
         # site loads (and unloads) about 23 hits at a time, so we scroll to get more
         # should be run 2 times before loop and then two times for each 20 hits
@@ -93,7 +95,7 @@ driver.minimize_window()
 print(len(found_elements))
 print(len(found_unique_elements))
 
-print(found_elements.__getitem__(0).text) # as of 14.03.25, song 1
+print(found_elements.__getitem__(0).text) # crashes as node is no longer in active view
 print(found_elements.pop().text)
 print(found_unique_elements.pop().text) # as of 14.03.25, song 14 ?
 
