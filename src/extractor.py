@@ -38,6 +38,20 @@ interaction.send_keys("\ue00c").perform() # escape key, escapes ad popup
 an_element = driver.find_element(By.CSS_SELECTOR, ".main-view-container__scroll-node > div:nth-child(1)")
 interaction.context_click(an_element).perform()
 
+
+
+
+# HERE
+# instead of using page down to scroll songs into view (and by that loading them)
+# use the mouse press to access the first row and just scroll with down-key
+# may be able to chain it with accessing the highlighted element and saving that to a list
+
+
+
+
+
+
+
 # prepare playlist view for scraping
 interaction.send_keys("\ue00f\ue00f").perform() # pagedown x2
 
