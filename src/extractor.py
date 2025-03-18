@@ -1,8 +1,8 @@
-from array import array
-import os
 from selenium import webdriver
 from selenium.webdriver import ActionChains
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+
 
 driver = webdriver.Firefox()
 interaction = ActionChains(driver)
@@ -35,13 +35,15 @@ interaction.click(cookie_btn).perform()
 interaction.send_keys("\ue00c").perform() # escape key, escapes ad popup
 
 # navigate to the start of the list
-first_row_element = driver.find_element(By.CSS_SELECTOR, "div.JUa6JJNj7R_Y3i4P8YUX:nth-child(2) > div:nth-child(2) > div:nth-child(1)")
+#   "div.JUa6JJNj7R_Y3i4P8YUX:nth-child(2) > div:nth-child(2) > div:nth-child(1)"
+first_row_element = driver.find_element(By.CSS_SELECTOR, "div.JUa6JJNj7R_Y3i4P8YUX:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(4)")
+#   click date added column (prevents clicking the album url when clicking center of component)
 interaction.click(first_row_element).perform()
 
 # prepare variables
 found_elements = []
 found_unique_elements = set()
-index = 1 # start from 1, replaces "#" in selector
+index = 0
 end_reached = False
 
 # prepare node selector
@@ -49,21 +51,43 @@ selector = "div.JUa6JJNj7R_Y3i4P8YUX:nth-child(2) > div:nth-child(2) > div:nth-c
 
 # start collecting row elements
 while not end_reached:
+    # check if index is in view - could also be 
+    if index % 40 == 0:
+        index = 1
+    else:
+        index += 1
+    
+    # rewrite selector with updated index
     selector = selector[:73] + str(index) + ")"
+
     try:
-        print("|")
-        # access element
+        # find the current element
+        element = driver.find_element(By.CSS_SELECTOR, selector)
+        
+        # add to list
+        found_elements.append(element)
+        found_unique_elements.add(element)
+
+        # focus next element
+        interaction.send_keys(Keys.DOWN).perform()
+
+        # element.get_attribute...
+
         # if element is relevant append to list
             #that is if element is not temporary (only UpiE7J6vPrJIa59qxts4) 
             #   - kan enten være at elementet er direkte den klasse eller at substring af child er den klasse
         # else if child element is not of class IjYxRc5luMiDPhKhZVUH UpiE7J6vPrJIa59qxts4 (JgERXNoqNav5zOHiZGfG) break
         # move focus to next row
         # if element is of class qnYVzttodnzg9WdrVQ1p break
-        print("i, li, e, s: ", index, element, selector)
+        print("||\ni, e, s:", index)
+        print(element)
+        print(selector)
     except:
         print("exception occured")
+        break
     # if element is not a row in list else if loop count = song count = end reached true
 
+print(len(found_elements), len(found_unique_elements)) # 1000+, 60+
 
 # HERE
 # instead of using page down to scroll songs into view (and by that loading them)
@@ -75,74 +99,74 @@ while not end_reached:
 
 
 
-# return focus to main window to pass keypresses
-an_element = driver.find_element(By.CSS_SELECTOR, ".main-view-container__scroll-node > div:nth-child(1)")
-interaction.context_click(an_element).perform()
+# # return focus to main window to pass keypresses
+# an_element = driver.find_element(By.CSS_SELECTOR, ".main-view-container__scroll-node > div:nth-child(1)")
+# interaction.context_click(an_element).perform()
 
-# prepare playlist view for scraping
-interaction.send_keys("\ue00f\ue00f").perform() # pagedown x2
+# # prepare playlist view for scraping
+# interaction.send_keys("\ue00f\ue00f").perform() # pagedown x2
 
-# prepare css-selector
-selector = "div.JUa6JJNj7R_Y3i4P8YUX:nth-child(2) > div:nth-child(2) > div:nth-child(#)"
+# # prepare css-selector
+# selector = "div.JUa6JJNj7R_Y3i4P8YUX:nth-child(2) > div:nth-child(2) > div:nth-child(#)"
 
-# prepare variables
-found_elements = []
-found_unique_elements = set()
-loaded_index = 0
-latest_element = None
+# # prepare variables
+# found_elements = []
+# found_unique_elements = set()
+# loaded_index = 0
+# latest_element = None
 
-# loop through the playlist table rows
-for index, element in enumerate(amount_as_int, 1):
-    # update the css-selector
-    if index % 40 == 0:
-        loaded_index = 1
-        interaction.send_keys("\ue00f\ue00f").perform() # pagedown x2
-        driver.implicitly_wait(30)
-    else:
-        loaded_index += 1
+# # loop through the playlist table rows
+# for index, element in enumerate(amount_as_int, 1):
+#     # update the css-selector
+#     if index % 40 == 0:
+#         loaded_index = 1
+#         interaction.send_keys("\ue00f\ue00f").perform() # pagedown x2
+#         driver.implicitly_wait(30)
+#     else:
+#         loaded_index += 1
 
-    selector = selector[:73] + str(loaded_index) + ")"
-    print("i, li, e, s: ", index, loaded_index, element, selector)
+#     selector = selector[:73] + str(loaded_index) + ")"
+#     print("i, li, e, s: ", index, loaded_index, element, selector)
     
-    # get the webelement
-    try:
-        element = driver.find_element(By.CSS_SELECTOR, selector)
-        tempElement = driver.find_element(By.CLASS_NAME, "UpiE7J6vPrJIa59qxts4")
-        loadedElement = element.find_element(By.CLASS_NAME, "IjYxRc5luMiDPhKhZVUH UpiE7J6vPrJIa59qxts4")
+#     # get the webelement
+#     try:
+#         element = driver.find_element(By.CSS_SELECTOR, selector)
+#         tempElement = driver.find_element(By.CLASS_NAME, "UpiE7J6vPrJIa59qxts4")
+#         loadedElement = element.find_element(By.CLASS_NAME, "IjYxRc5luMiDPhKhZVUH UpiE7J6vPrJIa59qxts4")
 
-        if loadedElement is not tempElement:
-            print(tempElement, tempElement.text)
-            print(loadedElement, loadedElement.text) # child node
+#         if loadedElement is not tempElement:
+#             print(tempElement, tempElement.text)
+#             print(loadedElement, loadedElement.text) # child node
 
-        # add element to lists
-        found_elements.append(loadedElement)
-        found_unique_elements.add(loadedElement)
+#         # add element to lists
+#         found_elements.append(loadedElement)
+#         found_unique_elements.add(loadedElement)
 
-        # site loads (and unloads) about 23 hits at a time, so we scroll to get more
-        # should be run 2 times before loop and then two times for each 20 hits
-        # interaction.send_keys("\ue00c").perform() # escape key, escapes ad popup
-        # interaction.send_keys("\ue00f\ue00f").perform() # PAGE_DOWN x2
+#         # site loads (and unloads) about 23 hits at a time, so we scroll to get more
+#         # should be run 2 times before loop and then two times for each 20 hits
+#         # interaction.send_keys("\ue00c").perform() # escape key, escapes ad popup
+#         # interaction.send_keys("\ue00f\ue00f").perform() # PAGE_DOWN x2
 
-        # interaction.scroll_to_element(element) # only works on chromium
+#         # interaction.scroll_to_element(element) # only works on chromium
 
-    except:
-        print("---------exception occured|")
-        driver.minimize_window()
-        break
+#     except:
+#         print("---------exception occured|")
+#         driver.minimize_window()
+#         break
 
 
-driver.minimize_window()
+# driver.minimize_window()
 
-print(len(found_elements))
-print(len(found_unique_elements))
+# print(len(found_elements))
+# print(len(found_unique_elements))
 
-print(found_elements.__getitem__(0).text) # crashes as node is no longer in active view
-print(found_elements.pop().text)
-print(found_unique_elements.pop().text) # as of 14.03.25, song 14 ?
+# print(found_elements.__getitem__(0).text) # crashes as node is no longer in active view
+# print(found_elements.pop().text)
+# print(found_unique_elements.pop().text) # as of 14.03.25, song 14 ?
 
-xset = set()
-for x in found_elements:
-    xset.add(x)
-    print(len(xset))
+# xset = set()
+# for x in found_elements:
+#     xset.add(x)
+#     print(len(xset))
 
-driver.quit()
+# driver.quit()
