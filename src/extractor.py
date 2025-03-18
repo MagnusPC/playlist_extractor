@@ -34,11 +34,35 @@ interaction.click(cookie_btn).perform()
 
 interaction.send_keys("\ue00c").perform() # escape key, escapes ad popup
 
-# return focus to main window to pass keypresses
-an_element = driver.find_element(By.CSS_SELECTOR, ".main-view-container__scroll-node > div:nth-child(1)")
-interaction.context_click(an_element).perform()
+# navigate to the start of the list
+first_row_element = driver.find_element(By.CSS_SELECTOR, "div.JUa6JJNj7R_Y3i4P8YUX:nth-child(2) > div:nth-child(2) > div:nth-child(1)")
+interaction.click(first_row_element).perform()
 
+# prepare variables
+found_elements = []
+found_unique_elements = set()
+index = 1 # start from 1, replaces "#" in selector
+end_reached = False
 
+# prepare node selector
+selector = "div.JUa6JJNj7R_Y3i4P8YUX:nth-child(2) > div:nth-child(2) > div:nth-child(#)"
+
+# start collecting row elements
+while not end_reached:
+    selector = selector[:73] + str(index) + ")"
+    try:
+        print("|")
+        # access element
+        # if element is relevant append to list
+            #that is if element is not temporary (only UpiE7J6vPrJIa59qxts4) 
+            #   - kan enten være at elementet er direkte den klasse eller at substring af child er den klasse
+        # else if child element is not of class IjYxRc5luMiDPhKhZVUH UpiE7J6vPrJIa59qxts4 (JgERXNoqNav5zOHiZGfG) break
+        # move focus to next row
+        # if element is of class qnYVzttodnzg9WdrVQ1p break
+        print("i, li, e, s: ", index, element, selector)
+    except:
+        print("exception occured")
+    # if element is not a row in list else if loop count = song count = end reached true
 
 
 # HERE
@@ -51,6 +75,9 @@ interaction.context_click(an_element).perform()
 
 
 
+# return focus to main window to pass keypresses
+an_element = driver.find_element(By.CSS_SELECTOR, ".main-view-container__scroll-node > div:nth-child(1)")
+interaction.context_click(an_element).perform()
 
 # prepare playlist view for scraping
 interaction.send_keys("\ue00f\ue00f").perform() # pagedown x2
