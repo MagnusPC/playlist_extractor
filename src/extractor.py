@@ -38,6 +38,7 @@ interaction.send_keys("\ue00c").perform() # escape key, escapes ad popup
 #   "div.JUa6JJNj7R_Y3i4P8YUX:nth-child(2) > div:nth-child(2) > div:nth-child(1)"
 first_row_element = driver.find_element(By.CSS_SELECTOR, "div.JUa6JJNj7R_Y3i4P8YUX:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(4)")
 #   click date added column (prevents clicking the album url when clicking center of component)
+print(first_row_element.get_attribute("aria-rowindex"))
 interaction.click(first_row_element).perform()
 
 # prepare variables
@@ -47,11 +48,14 @@ index = 0
 end_reached = False
 
 # prepare node selector
-selector = "div.JUa6JJNj7R_Y3i4P8YUX:nth-child(2) > div:nth-child(2) > div:nth-child(#)"
+selector = "div.JUa6JJNj7R_Y3i4P8YUX:nth-child(2) > div:nth-child(2) > div:nth-child(1)"
+init_element = driver.find_element(By.CSS_SELECTOR, selector)
+rowidx = init_element.get_attribute("aria-rowindex")
+print("|| rowidx:", rowidx)
 
 # start collecting row elements
 while not end_reached:
-    # check if index is in view - could also be 
+    # check if index is in view - could also be  
     if index % 40 == 0:
         index = 1
     else:
@@ -59,6 +63,8 @@ while not end_reached:
     
     # rewrite selector with updated index
     selector = selector[:73] + str(index) + ")"
+
+    
 
     try:
         # find the current element
@@ -71,7 +77,13 @@ while not end_reached:
         # focus next element
         interaction.send_keys(Keys.DOWN).perform()
 
-        # element.get_attribute...
+        rowidx = element.get_attribute("aria-rowindex") # replace local var index with this
+        # parent element of row indexes: div.JUa6JJNj7R_Y3i4P8YUX:nth-child(2) > div:nth-child(2)
+        #   get first (or all) elements of parent element, set the aria-rowindex as starting point for extracting row elements
+        #   maybe, get aria-rowindex of last element of parent element, when loop/findelement reaches that number, update again?
+
+        if rowidx == "912":
+            end_reached = True
 
         # if element is relevant append to list
             #that is if element is not temporary (only UpiE7J6vPrJIa59qxts4) 
@@ -79,7 +91,7 @@ while not end_reached:
         # else if child element is not of class IjYxRc5luMiDPhKhZVUH UpiE7J6vPrJIa59qxts4 (JgERXNoqNav5zOHiZGfG) break
         # move focus to next row
         # if element is of class qnYVzttodnzg9WdrVQ1p break
-        print("||\ni, e, s:", index)
+        print("||\n|| index, rowidx atr.:", index, rowidx)
         print(element)
         print(selector)
     except:
@@ -87,7 +99,7 @@ while not end_reached:
         break
     # if element is not a row in list else if loop count = song count = end reached true
 
-print(len(found_elements), len(found_unique_elements)) # 1000+, 60+
+print(len(found_elements), len(found_unique_elements)) # full run w/o exit criteria: 11588, 517
 
 # HERE
 # instead of using page down to scroll songs into view (and by that loading them)
