@@ -38,14 +38,17 @@ interaction.click(element_to_click).perform()
 # prepare variables
 found_elements = []
 found_unique_elements = set()
-inc_idx = 0
+inc_sel_idx = 0
 end_reached = False
+found_rowidx = 0
 
 # prepare node selector
 selector = "div.JUa6JJNj7R_Y3i4P8YUX:nth-child(2) > div:nth-child(2) > div:nth-child(1)"
 init_element = driver.find_element(By.CSS_SELECTOR, selector)
 starting_rowidx = int(init_element.get_attribute("aria-rowindex"))
-print("|| starting_rowidx:", starting_rowidx, type(starting_rowidx))
+mod_slice = 25
+playlist_slices = count_as_int / mod_slice # used for keeping track of modularzation
+print("|| starting_rowidx:", starting_rowidx, type(starting_rowidx), "amount of playlist slices:", playlist_slices)
 
 # start collecting row elements
 while not end_reached:
@@ -58,19 +61,30 @@ while not end_reached:
     # parent element of row indexes: div.JUa6JJNj7R_Y3i4P8YUX:nth-child(2) > div:nth-child(2)
     #   get first (or all) elements of parent element, set the aria-rowindex as starting point for extracting row elements
     #   maybe, get aria-rowindex of last element of parent element, when loop/findelement reaches that number, update again?
-    
-    found_rowidx = int(element.get_attribute("aria-rowindex"))
-    print("|| found index:", found_rowidx, type(found_rowidx))
 
-    if found_rowidx >= starting_rowidx: #TODO add check to prevent found index from spilling over the max loaded elements
-        # increase the element selectors last node index
-        inc_idx += 1
-        selector = selector[:73] + str(inc_idx) + ")"
+    if found_rowidx < int(element.get_attribute("aria-rowindex")):
+        print("|| latest aria-rowindex:", found_rowidx, type(found_rowidx))
+        found_rowidx = int(element.get_attribute("aria-rowindex"))
+        print("|| replacing aria-rowindex with:", found_rowidx)
         
         # focus next element
-        interaction.send_keys(Keys.DOWN).perform()
-    else:
-        print("!NB found index is not greater than or equal to starting index\n=", found_rowidx >= starting_rowidx)
+        interaction.send_keys(Keys.DOWN).perform() # could also be used to get the element that is in focus (selenium docs)
+
+    if found_rowidx >= starting_rowidx:
+        # increase the element selectors' last node index
+        inc_sel_idx += 1
+        selector = selector[:73] + str(inc_sel_idx) + ")"
+
+        # reset index to prevent child node index spillover
+        # TODO should check aria-rowindex on first and last element to prevent error?
+        if inc_sel_idx % mod_slice == 0:
+            playlist_slices -= 1 # TODO fix method breaking off at 25 always
+            inc_sel_idx = 0
+
+    # if (found_rowidx >= starting_rowidx) & (found_rowidx >= 52):
+    #     # reset index to prevent child node index spillover
+    #     inc_idx = 0
+    #     print("\t!NB found index is not greater than or equal to starting index\n\t=", found_rowidx >= starting_rowidx)
 
     # add to list
     found_elements.append(element)
@@ -78,10 +92,10 @@ while not end_reached:
 
     # if child element is not of class IjYxRc5luMiDPhKhZVUH UpiE7J6vPrJIa59qxts4 (JgERXNoqNav5zOHiZGfG) break
     # if element is of class qnYVzttodnzg9WdrVQ1p break
-    print("|| increasing index, starting_rowindex:", inc_idx, starting_rowidx, "\n||")
+    print("|| prepared selector index, starting_rowindex:", inc_sel_idx, starting_rowidx, "\n||")
     print(element.text)
-    print("||\n||", selector)
-    print("|| printing new line...\n")
+    print("||\n|| found by selector:", selector)
+    print("|| printing next element...\n")
 
     # exit loop
     if found_rowidx > count_as_int:
