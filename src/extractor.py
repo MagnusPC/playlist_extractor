@@ -50,6 +50,15 @@ mod_slice = 25
 playlist_slices = count_as_int / mod_slice # used for keeping track of modularzation
 print("|| starting_rowidx:", starting_rowidx, type(starting_rowidx), "amount of playlist slices:", playlist_slices)
 
+
+# TODO
+# instead of while loop, use for each again
+# on each element, check if in-focus, grab element, move focus to next element
+# this should make sure no playlist slicing is needed (the if % statement)
+#   keep track of 31st element to scroll to or begin from this when lazy load cap is reached - may not be needed
+# 
+
+
 # start collecting row elements
 while not end_reached:
     # try: TODO uncomment
